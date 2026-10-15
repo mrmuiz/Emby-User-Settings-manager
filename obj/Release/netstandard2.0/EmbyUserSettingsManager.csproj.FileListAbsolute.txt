@@ -1,0 +1,10 @@
+C:\EmbyPlugin\EmbyUserSettingsManager\bin\Release\netstandard2.0\EmbyUserSettingsManager.deps.json
+C:\EmbyPlugin\EmbyUserSettingsManager\bin\Release\netstandard2.0\EmbyUserSettingsManager.dll
+C:\EmbyPlugin\EmbyUserSettingsManager\bin\Release\netstandard2.0\EmbyUserSettingsManager.pdb
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.csproj.AssemblyReference.cache
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.AssemblyInfoInputs.cache
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.AssemblyInfo.cs
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.csproj.CoreCompileInputs.cache
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.dll
+C:\EmbyPlugin\EmbyUserSettingsManager\obj\Release\netstandard2.0\EmbyUserSettingsManager.pdb
