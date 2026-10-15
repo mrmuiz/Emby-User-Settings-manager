@@ -1,4 +1,4 @@
-# Emby User Settings Manager — source project — v0.1 beta
+# Emby User Settings Manager —  beta
 
 Source for an Emby Server plugin dashboard page that applies selected display and playback preferences to all users or a selected subset.
 
