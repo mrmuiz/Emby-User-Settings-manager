@@ -740,6 +740,7 @@ define([], function () {
             function localizePage() {
                 Array.prototype.forEach.call(page.querySelectorAll('[data-i18n]'), function (n) { n.textContent = t(n.getAttribute('data-i18n')); });
                 Array.prototype.forEach.call(page.querySelectorAll('[data-i18n-placeholder]'), function (n) { n.placeholder = t(n.getAttribute('data-i18n-placeholder')); });
+                try { var srcSel = byId('eus-source-user'); if (srcSel && srcSel.options.length) srcSel.options[0].textContent = t('pickUser'); updateCount(); } catch (x) { }
             }
             function apiGet(path) { return ApiClient.ajax({ url: ApiClient.getUrl(path), type: 'GET', dataType: 'json' }); }
             function apiPost(path, data) { return ApiClient.ajax({ url: ApiClient.getUrl(path), type: 'POST', contentType: 'application/json', data: JSON.stringify(data) }); }
