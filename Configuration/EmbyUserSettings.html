@@ -1,0 +1,129 @@
+<div data-role="page" class="page type-interior pluginConfigurationPage EmbyUserSettingsManagerPage" data-require="emby-button,emby-select,emby-checkbox" data-controller="__plugin/EmbyUserSettingsManager.js">
+    <style>
+        .eus-wrap { max-width: 1050px; margin: 0 auto; padding: 1em; }
+        .eus-panel { padding: 1em; margin: 0 0 1em; border-radius: 8px; background: rgba(128,128,128,.09); }
+        .eus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1em; }
+        .eus-setting { display: flex; align-items: center; gap: .7em; margin: .75em 0; }
+        .eus-setting label { flex: 1; }
+        .eus-select { min-width: 130px; }
+        .eus-text { padding: .4em .6em; border-radius: 4px; border: 1px solid rgba(128,128,128,.5); background: transparent; color: inherit; font: inherit; box-sizing: border-box; }
+        .eus-setting .eus-text, .eus-setting .eus-select { flex: 0 1 280px; width: 280px; min-width: 0; }
+        .eus-stack { display: grid; gap: 1em; grid-template-columns: minmax(0, 1fr); }
+        .eus-setting.eus-missing { opacity: .5; }
+        .eus-views { flex: 0 1 280px; width: 280px; }
+        .eus-views div { display: flex; align-items: center; gap: .3em; padding: .2em 0; border-bottom: 1px solid rgba(128,128,128,.2); }
+        .eus-views select { flex: 1; min-width: 0; }
+        .eus-views span { flex: 1; overflow-wrap: anywhere; }
+        .eus-views button { background: transparent; border: 1px solid rgba(128,128,128,.5); color: inherit; border-radius: 4px; cursor: pointer; padding: .1em .5em; }
+        details.eus-panel > summary { cursor: pointer; font-size: 1.5em; font-weight: 500; margin-bottom: .5em; }
+        .eus-libs { max-height: 220px; overflow-y: auto; }
+        .eus-libs .eus-lib { display: flex; align-items: center; gap: .5em; padding: .2em 0; }
+        .eus-diag { width: 100%; min-height: 8em; box-sizing: border-box; font-family: monospace; font-size: .8em; }
+        .eus-header { display: flex; align-items: center; gap: .8em; }
+        .eus-header h1 { margin: .4em 0; }
+        .eus-lang { margin-left: auto; position: relative; }
+        .eus-lang-btn { display: inline-flex; align-items: center; gap: .5em; padding: .4em .7em; border-radius: 6px; border: 1px solid rgba(128,128,128,.5); background: transparent; color: inherit; font: inherit; cursor: pointer; }
+        .eus-lang-btn svg.eus-flag, .eus-lang-item svg.eus-flag { width: 22px; height: 15px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(128,128,128,.35); flex: none; }
+        .eus-lang-btn svg.eus-globe, .eus-lang-item svg.eus-globe { width: 20px; height: 20px; flex: none; }
+        .eus-lang-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); min-width: 12em; z-index: 50; padding: .3em; border-radius: 8px; border: 1px solid rgba(128,128,128,.5); background: #2b2b2b; color: #fff; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+        .eus-lang-menu.eus-open { display: block; }
+        .eus-lang-item { display: flex; align-items: center; gap: .6em; width: 100%; padding: .5em .7em; border: 0; border-radius: 6px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+        .eus-lang-item:hover, .eus-lang-item.eus-sel { background: rgba(255,255,255,.14); }
+        .eus-langsel { margin-left: auto; width: auto; min-width: 9em; padding: .35em .6em; border-radius: 6px; background: transparent; color: inherit; border: 1px solid rgba(128,128,128,.5); }
+        .eus-langsel option { color: #000; }
+        .eus-badge { font-size: .8em; padding: .15em .6em; border-radius: 1em; border: 1px solid rgba(128,128,128,.5); opacity: .8; white-space: nowrap; }
+        .eus-logo { width: 56px; height: 56px; border-radius: 12px; flex: none; }
+        .eus-users { max-height: 320px; overflow-y: auto; padding: .5em; border: 1px solid rgba(128,128,128,.35); border-radius: 6px; }
+        .eus-user { display: flex; gap: .6em; align-items: center; padding: .35em .2em; }
+        .eus-actions { display: flex; flex-wrap: wrap; gap: .6em; margin-top: 1em; }
+        .eus-results { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow-y: auto; }
+        .eus-note { opacity: .8; font-size: .92em; }
+        .eus-status { margin-top: .8em; white-space: pre-wrap; }
+        .eus-ok { color: #2e9d50; }
+        .eus-error { color: #d9534f; }
+        /* Keep controls usable in narrow embedded/mobile WebViews. */
+        .eus-wrap, .eus-panel, .eus-grid, .eus-setting { min-width: 0; box-sizing: border-box; }
+        .eus-setting { flex-wrap: wrap; }
+        .eus-setting label { min-width: 0; }
+        .eus-select { max-width: 100%; }
+        .eus-users { overflow-x: hidden; }
+        .eus-user span { overflow-wrap: anywhere; }
+        .eus-actions button { max-width: 100%; white-space: normal; }
+        @media (max-width: 600px) {
+            .eus-setting .eus-text, .eus-setting .eus-select, .eus-views { flex: 1 1 100%; width: 100%; }
+            .eus-wrap { padding: .5em; }
+            .eus-panel { padding: .75em; }
+            .eus-grid { grid-template-columns: minmax(0, 1fr); gap: .5em; }
+            .eus-setting { align-items: flex-start; }
+            .eus-setting label { flex: 1 1 65%; }
+            .eus-setting .eus-select { flex: 1 1 100%; width: 100%; min-width: 0; }
+            .eus-actions { gap: .4em; }
+            .eus-actions button { flex: 1 1 auto; }
+            .eus-results { max-height: 45vh; }
+        }
+        .eus-row { display: flex; flex-wrap: wrap; gap: .6em; align-items: center; margin: .6em 0; }
+        .eus-row .eus-text, .eus-row .eus-select { flex: 1 1 200px; min-width: 0; }
+        .eus-extra { margin-top: .6em; }
+        .eus-extra label { overflow-wrap: anywhere; }
+        .eus-tag { font-size: .75em; opacity: .65; margin-left: .4em; }
+        .eus-warn { color: #d9a441; }
+</style>
+    <div class="content-primary">
+        <div class="eus-wrap">
+            <div class="eus-header"><img class="eus-logo" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAbVklEQVR42u2deXxc1ZXnv+e+92pRSZbkDWPAGAwGbHYIwU0Se8KEJg0hvSCzJGmannRnMslkAk2HD5MmwkmmISTNJAPpT0LTM8mQAcYK0DEkrMGI1ayNMZbBxjY24EXYstba3nv3zh/vVamqVFWqUpXBPfC8SKp6uu/W75x77jm/c+69QjMvg/BhuARzQPSj23SrpauX2l0ruyz4kIAfiqBrZZe1dPVSu7u7WzUmy6k83HSpHnp0qSZctvqy2CCDsYSdqLndIaA9/ErJ90U3Nf0aqvS0ireOurZhcDDde3lvunTkd/V0qZ7lPRrqGx11CaBrZZfVs7zHz/28/OkvHm9ZLDOev0Qbc4zxmQ2mxRiUMUHPwr+5jmIAMQZD7vvw/fA/Y8JelXs910y5tjXo8TcL7hdM7of8/QaMYAoaKG7fFD8r7JPRWouQBOlH8QZKPet78njvxfe+Vgmj5ghgXML+aT8/zVl4wsJLQL7sa3NWJOEoo0F7Gu1pjAGjTQ5DjAnxNIQfOA9B+F8OoFJhSfH9hjIgFrYzDlxVYY3Los62QyBEQAliKRBwk64W4WkMtw0PvXvnS195yQ2FUNNomFQA3d3dasWKFRrg4qcuvkBs63tW1D5Rexov6WLAAzDaKATQQZvlOt8sECbeb0raLNHkCaOwjObnXi/Xl0KlAWOMQRAdtm9bMRuU4Gf8V7Vrrn3iS6tWheApQuymJIBu061WyArdtbIrrg6N/MSJWn+lfY2X8v2wO8oU+ATVzE4p0M0Dv5zZqSb06uBXGlVVhG60MRoNVsy2UKCz+tbMzv5vrvmbNakchnULIA/+6q45dsy512mNnJnZl/G1MSKCqghQDeCXNRfvC/iVhD5l8Iueq7XWgHHaopaX9NZI1vuT3st/t6vQitQmgG4UK9AXP3rxQSTUY07cWZQZyriIOFUB+hCDX2TujHHtRMTxM15fRvj0c5fetzuH6eQCCCfcllktTtpxe51W54xsk8D//8jsVAY/95o2rp1wHC/lPW/5I0tnJ2a7PV0TXfcJQUTO20lbmZuj7ZFx8E3jms8HpvnvI/jjbqvjjWZdO+Gc4enWm3uW9/hdPV2q6gjI+bAXPXnpZ52E/Tt3zPWMwf7I7NQBfsGIC91wz47btp/O/tHTf/HAA6VxgpQyHF09XY7MsdbaMfsYN+WZRifcD43ZKQN+KAGtIpb4Ge+NwbbWk/rW93isyI+TcRO0dPVSC8HIXLsr2hY91kt5uhnezofG7JQIveBRykt72k5Eju0YTnaxAr20e6k1YQ5Y9viyIJL3zdd9T5vyHf3I7NRodorvFdCeNhr9dYBelukiE5Tz+S96/KLjcKx1xtcKgxyoZocJbQbf64rUxftsdsq3bRC09jnhub/63YZclKwAHn/8cQWglXzGabEtY/APVLMjCL7x8bSHazw8Hf4zHiqc0j5ws1OmbaPxrbhtgf8ZgKUEmCuA2ctm5/BZYrQpaezAMjtJN0mL3UJ7pL3g3zRa7BaSbvLAMTulbYsBDYJaAjB7cYC5DdBDjw7Va6H2DEYbJSIHlNkRhLSf4kvHXswfL/gctrKRnMaj8bTPPW/ex+19dxGz4mj8A8HsFLRtlPY1xrAQIGRLEQyCYC5bfVksKelNyrEO9V1fY0QdKJoPQtbPcnDLQdz+h/9Ulb299LdfZsfYLiLKwYR5h/1pdkztbWuxldJZ/U4skjy69/LeNAaxC/oeA+LGhJSyHDhmR8SgtSZux8fNSoUr7sTRWoM6UDQ//7qEGaM4dMSAdN4EAbi2K8ZDoStx6B9ckCUmMDU64OGr546MrpwX+KDAHw/KMBjlpzwpywWZkNw37D9vRxAUKvBYagBfoRCxAjupJ0+3ah1krWwslKiaABIUllhN8XaqJojKjF+7lAo1qII8YnPNjkLhaY+kl8IWh5gdw2i/jGAFSwRf+4x5STzto40mYkUmFUDEipBy02S8DBYWMTuGJRa+1gV9KwBfFCk3het7xO0YtrLDe5uo+eH9EipdZQGYyU3DVM2OJYqkm6Yt0spZc5bw7thO+gY20Oq05j+whH+yJksymyJhJzhh5mJOn30Kx89cxBHTDp9UADd8qpstg9t49b31vLDzZV4f2MRwZogWO05ERfDxi8AfyYxywqxFHNI6h+d2vMxwZoS4HcfPKUaTwC8KICsJIF+QUPRN42bHEosxN8nM2Ey+//HvsKD9CDztcdMrN7Nqy+/ojHYCkPVdxtwxDk7M4c8WfJ6z5y3jqPYj6yo2mR7rZPqcTk6fczJ/ecIX2LRvCw+/9RgPbVnNu6M7abVbcJSDAQZS+/jTY87nmiXfxFY2mwY2c8Wj19I/toeE3YJnvMbNTolJM1VHQOFvV5mc6jI7ohhzk8yIzeAHS77LvLbD8LSHrWy+deoVYGDV1gewxaY90salx1zIBUeeR2e0I/9c3/jB2BCZfBLGhO5nIPijO4/k6M4jufS4C7n7jfvoef1f2JcexvM9/vSY87n2rKsA8LTH0dMXcMs5N/C1B6+mPxkKoWDENAq+mHIpyTAOuPTJSzvTGW+z2KrTuNogSKNmRyGkvAzTY9O5ccn3mdd2KL7xscTKd1pE+PsX/oHh7DDfOPmrzE3MKQBdoaSxgjttdF4YAO+O7ORHz91Ce2wa133i6gAkGac4LLF4a3A7X3vwW7yXHCBmxYI2GgQfgxFLRPv+voxxFqz7T7/dh0GKBJDKeJuVJZ3ayxuhKWu+IPhaE7Wi3PSJ65nfdnj+AxZqa6lG+8ZHiZpU0+u9DAZtdNHzy/Uh18fN+97ir++/kpSXLvKmpgh+8KIlon29L46z4KlQAAom2neaEGQJwpiX5MyDPsb8tsPxtDfhwxd+8JzpsEKXs9mXIMHIM8XOYOmzLLHwtMeCzvl8Yt6ZjGbHUKG3PmXwq1Ro2WWngCYEWRqDIw7bRt4ONE9ZZTW+CIg6cC8EMjc/1CQIkUnbtZSFNpot+7YRsUJKoyHwC2IIDUOqSlK+ou9fZ4RrjCFmx+gb2MCP/vUngZ0rZCinaEZ84weCFEGJCsyVSNF7jbSfU5IVT/yIdf19gUtqdFPAN5O5oblaTYwOvjRILxjt0+q0smrLA2DgW6ddUfQh65tMDUokb8b2pgYYSA+GrmcHM+LT8+9po1Gi6gYfQIniut4buXvDfUyPdeJpv2ngSxlbZE/0QJvL7fha0xntYNXWB/CN5m9P/S9Yyqrbk1GiyGqX+zc/yCNvPc62obcD/h9osVs4fNqhfGb+Mj531GeJWE79QjDBBPzdJ37EPa//lhmxTtwmgj8hR1EqgCHAqVQi3gRizRabocwwSFANXavNzgG5ad9m/tuaf2D9nteJKIeIFUGJhQApN8Xa/vW8sONl/mXjA1x71lUsnL6gLiGYMAzdlx7CUc54CVvTzE5546jKTwDNA18QXN9lWqSNq079z9hS+2KaHIAbBjby9d9/i40Dm5ke66TFbkFh5Z+jRNFix5ken87GgTf56kNX0bdnI0oU2uiaB4GtLK795JW0R6fh+l7IyDdJ801B0VYlAZgJgXAzMlmKUXeUrqP+hJnxmaGfLzVppCAMZ0fofup6xrJjtEUSuL6HHwZXOe00JvDxXd+jLdLGWDbJt3u/z3BmJJj8a5iYlSh84zM7MYsvnHAho5lRlFJNNzum6ggo8lmbU72Q1RkOThzMHy84P+BaazQJ2mhEhDv6fs2WwbdIOAlc3y8ZrBM/sKtdEk4LW/Zt4/bXViIiNY+CXMB10eLPM3faHDJuNhRgE8AvHAVUdUOlackUJYpkNsk58z5NW6Q1AJXatD9H4D381mO0Ook8OzlZMgUDvvZpdRI8uPkxxtzkOPVRQ7CmjWZatI3zjz6HMTeJiGoO+JWEPtEENS+T5WufFifBOfM+XTbqrBYMAWwceJPdY/3BpFj04ScjCw2O5bB7tJ/X92yaQKTVEqidv/AzJCLjgm8Y/DKEXnkTNCGRPTXwFYqUl+a4zoUcPm1eXeYn1/l3Rnfiam980q4jjSgIWd/lnZEdVXyQCmYIw5Gdh3P8rGNJuelxxWkIfFNWCcYRGZpIXNRv8wUJmUUlQfbr9INOzdv0eq+sny0Btp4cbhDwZf1sdTKmbFoz6OuSw07H1S6WslAldHjd4NfCBRVOElOp28noDFqbAntqOGHmorrMT+HVGetAocZ5n3oS6CYYhZ2xzlwHayfuQjN08pzj0VqTzCTxw+cohIjtkGcnatL8cRdz8oRMPiNWn9lJ+ykOScwlasWCxZImoKLnh2lEqYPXl3BgHt1xJC1OC77x665e8LUh4SQ4evqRRW3WypwCLJg+n9PnnkzaywT9N5B0U2wffJeYHa0dfGrlgkoc3lo1P+Ul+dKxl/CFY5fjKCcPdqHW1zMCVEiuHTrtEBbPPIYXd75CwkmMJ8snAd/CYsQd5WNzT+Hw9kOD0VCPAoT3To938KsLf1qwfNWQ9V3+6cVf8bPnbyfhtKC1rhn8clzQhLIUU6ef72mPjkgHFx3zZ0StaN5ONsrpB1UE8OeLLw6Bl7rqdnyt+YuTLqlrAq42InKUd8yOcvmplzA93oHru2VY5CqabyYWpqhy2YDavZ0ADFs56Aap4HLeiDaaM+aexhePX857Y3uwlVXVI1EoLGXTP7aHy066iDMPOW1KzGgtlHhkgmtcC/i10NF1LY6QfOwgRmoO++sxBdpovnHaX5P2Mty5/m5a7DhRKxaoTontTXlpktkUf37icr55xlfy0XSzM2sS0uP1gl8bHT2Obe0rU3L374c0IhJE5lef+Q0WzzyWX6y9g62Db+crJXJuoxKL+e3z+MuTL+VzC88JuSS1f/fQMePEQU2aXyYitstnxCq5fMXgC+MenjGmqdoPhd5jQGGff9Q5/Pv5S3l+x8us6+9j11g/GDgoMYsTZi/i44ecRsyO5pM3+wfz8YRSIcVWFXwz0WSWF4AmP7SLMmJUXpMFkNVuPpm+P4RQaI5idpRPzVvCp+YtqUph768rl9zPeNmw1LAG8CmpCxqqMAlr6tvyRaOxxWYwPcidr/+ajJ/Jj4T9I4igdqfSFbwn+03rjTGkvQz//OJdDCQHcZQ1PhdMAn7Osmhjgn2iyk/CgepPrESsvBRUo4laMW7fcBePbX+CmB0N7bIhake54ZPX0Rlrn1IeuLxmW+wa7ee19zawY2QXAHNb53D87OOY0zq7KaMgl7EbSA3y9VX/NagNCnV1zE2xfd+7xJ1oSVxSHfxKE6VdNgouMkG1LQWNWXF2jO0KOJ+w4i3lpnlreBudsRPrSkNWAn/r4Hb+5yv/h6fefo59qaF8xZoSRWesnbMO+zhfPuWLHNE5ryEhaAwWwpt7t/L8O/9K3IljtMm7ui1OrG7w84FYiQmawAXJpJpfnoTSBL5x7nVbbNJuhlf713PK7BOnbJJyQN7z+v38+LmfM5wdIeEkaI9OGw+xDGQ8l1VvPMTjW5/hiiX/kQsXnT91IYRAvLzjNUQUCacFT3v5XbymAj7lM5LlCZIJW4jVuAI9SA0GtjJX4vfczpfygVW9V65M8daXf8l1T9yIbzTt0XYUEi5P9fG1j6d9RITOWDu+8fnO6hv42Yu/DNKM2q/7ubm+PrPtBRyxg/UJ2qCNn2dK6wWfopzwUGUBTIyCK5udaokHX/vE7Rgb9m5k69D2fLapdvCDOs671t/LzS/cRmesMw+orlAo62oPJYrpsU5+/Oyt3LHuHixljRdW1TjiEGHzwFus27WBmBMLQa/d2ykHfqWssKKmCXdqK9AtsRjJjvLg1kfr4mSCIlrFq/193LTmH+mIdeTt/WRVysHo03TEOvjhUz9l7a71WHVUR+Q4qFUbHmY4MxYWezUD/LBsvmQirlKaWJvZqZZy87UmYbfw4ObfM5wdCbj9GnOzrnb54bO3oMOfawF/PKlnsMK44fon/weu79aWiw4n9KH0CL/peyhkO/3GwTflqeiyKckJWzI0sPeCwRBREd4Z2cHdr6+qqULBN4E9f+DN37N293panZYp1ed72qc10sorO9dz/8ZHkXDN2WQjT0S4Y+29vD24g6jt1OXnVwK/Wom0KpsKMFM3O6X3+yaoULiz7x76k3uwpDh4KTcBetpnZd9viFqR/KReD/i5+7XWRK0Id756L572qzoCuQru3aPv8YuXVtIWbS0SWCPgF9ZamUnLUmgs0196vzEGRzkMZoa5/pkfh8WuprIGIqzr7+P1PZuKFsvVC34gfE3cibPhvU2s3bV+0hHoaY/vPPJDBtND2MouoNybA345MkhVtf9N2vgCwPU9OmKB717JHufaemL7s2R9t+iuqdbnC0LWy9K79ZkJ/S2ddwzQGW/H9dySeKgx8ClLOZelo02eMGoW+Eos9oarEa8966qqk7BSgT6s69+Ao+y8qWpkcYQ2Gkc5vLJzfdEzytGutljccO63ERR3rf0N0+Od4bLWxsA3BeU+VQKxoaZrvohiODMyDr7RFfPD+VrQzAjvDO8IlpI2YWWK0YaI5fD20M6qtaL5chNjuP7ca7jopM8zlMl5bg2CX9761BKINQA+ARd0/Kzj+PYfXBm8V2WZaa7NvakBhjMjwZKmSjVBNYKf+z0lFsOZEfaMDUxqhnLv//0fXs3JcxaRdJPja8SmCH5uy8885Vw9EGsc/IBKUWT9LPPb5+Uj2Gq+eG7CHsmMhTZYimjchlamiOB6LsOZ0UkTRyKCF1IgC2YcHvD+Ig2BX04Ok2fEGgA/58+32HGeensNWwbf4siO+VWXqeZeT3tpDGCJjRiNUaaYnc19T8F+FjKe8cj3S8ZX/CuEtDGk3TQigkXlpbK+9nGUzaY9W1m9+RlaI2E5TBPAFyb6oRVXSTZjpylb2YxkRvnGQ9dwy7k3Mr/9sPGF2gU7Cl67+gYG0vv4zqeuoj02jZHsGGk3g84n++vblr7I79Yak/PC4tPYNfIef/fwD5iR6OAH5/5d0bkAvvaxlMXmvdv4Dz1/w3B6lJgdC13XxsCvFIjlF2qfd/95nemkvVnZ0qldU5T0nOp+O8YQbtKRYmZ8Bj899wfM75iX36oA4LreG/n1hvuwxWZWy0zOPuKTzG2bw/yOw3B9l7SXyZNpwQLukpM3yswlOr9VgSJmR3Eshy0D23l3aBcPb+qlf/Q9XN/johM/z/XnXgMYXN/HsWw2793G5SuvYPfonqAqL4xbGgZfhwu1PbMvZnsL1l3z1L7SHbOKpdSEzY5yfFCLE6c/uYevPXg1//2c77Nw+gI87fG9J2/i7g33MSPWiQaGMyPcue5ejp5xJJ89+mz+6KizObjtoIbSiTuGd3P/649w/xuP8kb/ZmJOlLZoGwLctfY3AHz3nL/FsWw29L/JV+65uvngF5alTDYCxJJOE46Apu00Fa6AT3op2iJtnHnIqbw9tINX+/uYFmnFy21XE1ZXJ900STdFq5PguFkLWXLoaZw853iOmnEEM+Kd1apE2Jsc4M29W3l5x2s8s/1F1u9+g5HMKC12S5DJKuCVAuJtlFMOXsRhHYfw9NYXGEqPEHfiTQcfgxElon2zL2N7C7aHI6BIAKkxu2CvCCNNAb/ALuc2bBrLJnGUHX7QiYugg/LGwHNKuWk87eJrzelzT+JXF/5jVY2/5P9+lRfeeQUlCltsYk4s5J/8fOV2Yd8VwpibwvU8EpE4lrIn8v+Ng59b9iPaM/viTjUTVJKbbOamppogRdgebcMYyoKfM5eE1Q8tThxLJUhm0qS9zKQmJ+1laHHitDhxPK3RWuMbryKl7GNoseOIE2wusl/AL5i3hMm8oPdhgzuf2iNcE7Bq+EYH67UmSyei0Frn04i1JFM0umBtxP4Bv7DtoXICGHVto4zWUhJ6fyC7C5a2LePmwpSW5RVOAEJB0BQc6dSMZErTwA/0X0vaMhMj4cHBtBhSYS2maZbZaRj88HcUwmg2WbRzVtGf8LXRTDLkbw408IMpF0yKcM/QXJBoAOm9vDdtkH5RgjGNa75pEvi5PG/EirB98F1uXvPP7EkOMJgeZjgzwnBmhMH0MHvGBvjJM7exffBdInak7IT7gYFfEOwZpH/bit50OIaNDdC1Mjg3BmM2iqVOFUQbjPpAzU4pq2kMMTvKz567nZXr7sNRdsH9Qla7DIwNEneiDZWO7B/wAYM2SpQYsxGAlV2K5T2+DdA/qz8sXZdnES4uC9z7bHYqEWuJSAujmbGifaFNOD8kIvEpF03tZ/ADMxPwU88CLF3fL725OSB3eoYW7xE3mfUhYKs+SLNTKTWqdVAvZCsbR+zgq7KxRB3Q4INYOu36lsUjMH6KxrgvER40tuxX5z9rxZ2PuylXC2J9kGanvkXQHLjgG+OriKX8tPfclu8+uaTwULfxQ3yWLVXBvfJTlAj6wDE7/6bBz/2iEjGKW0K0VUEmtIAX6kYWLe6yZ2bSa62odYyXdo2IqI80vxHwtRbHEj/jvxGXvSf10Vf+GCvAdC3ukr7lPVnEXClKBBH9EfiNab4BjSgRI1f2rejLsrhLCjMDRbF9z/Iev2tll/XEF+9/IDuWvS3SFrG1MW65eqGPwJ+k7aCgwLXiEVunsrdt+d4TD7Cyy6LktO2Kh3n2j7U4xh7oteL2Ge5o1kVwPtL8OjTf4KqY7eiM97xvZOm2vtkuK2s4zBPB9KzvMb2X/zJtW1zgZ7w+O+E4aON+BH5t4Osc+K7fZzL2BdtW9KZZ1GMmUKGVShNZge7u7laPXXrf7lTWP9vPeGvstqhjtPGNMfoj8CtPuMYY325xHJ3Va/xhzt56/WO7g0PbKFsTWXEDz97eXtPd3a3uuOK2kblnTb+DaGyWFbU/JkpEu7kCT5Ewq/ZhBt8QKKVREcsS21LG9W/NDmYuefumpwcnO1d+8qL5ggb+4BfnXSCK71kR+0TtafyMjzF4uXOywu2JpXr1QgUQGgCtorCKFkdQe1+qtT0Oe25nJFs5CqMEk/VfxTfXbl7xxKrC4LYavLUuW5QcYXfaz09zYtE5l2jky2h9lhW3FRq0rzF+UAq4/44KLwBImLAC/X0ZhSKIEowKt0nIuBqRpzHmto53xu586daXXLq6LHp6NDXs01XXutHSw4iX/O/zjje++XeiOdMYc4zRzMaYFhOUU1XXct1gIViZ+/WEw4dyz5SSdkrOSNOTnGMW9ttgtCBJhH4j8gaYNUaxesu3e18bB6nLoqen5pWBU1m4G4yGMuejL/1fS2ODg8TaZrdKUd6tzDXEfryGmvOUIcYXtQ8BYSYrHfL5Ra47PV2K5bVpfaMCKJoflvK4mr14tumZwsP/DV/Cyi4VUMrLdLVJdv8KoEwQ9yGAnmYq2v8DH4RbEAQQcPMAAAAASUVORK5CYII=" /><h1 data-i18n="title">Emby User Settings Manager</h1><span class="eus-badge">v0.1 beta</span><select id="eus-lang" aria-label="Language" style="display:none"><option value="auto">Auto (Emby)</option><option value="en">English</option><option value="nl">Nederlands</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option></select><div class="eus-lang" id="eus-langbox"></div></div>
+            <p class="eus-note" data-i18n="intro"></p>
+
+            <div class="eus-panel">
+                <h2 data-i18n="presets">Presets</h2>
+                <div class="eus-row">
+                    <select is="emby-select" id="eus-preset" class="eus-select"></select>
+                    <button is="emby-button" type="button" id="eus-preset-delete" class="raised"><span data-i18n="deletePreset">Delete preset</span></button>
+                </div>
+                <div class="eus-row">
+                    <input type="text" id="eus-preset-name" class="eus-text" data-i18n-placeholder="presetName" />
+                    <button is="emby-button" type="button" id="eus-preset-save" class="raised"><span data-i18n="savePreset">Save preset</span></button>
+                </div>
+                <h3 data-i18n="loadFromUser">Copy settings from a user</h3>
+                <p class="eus-note" data-i18n="loadFromUserNote"></p>
+                <div class="eus-row">
+                    <select is="emby-select" id="eus-source-user" class="eus-select"></select>
+                    <button is="emby-button" type="button" id="eus-load-user" class="raised"><span data-i18n="loadSettings">Load settings</span></button>
+                </div>
+                <div class="eus-row">
+                    <button is="emby-button" type="button" id="eus-diag" class="raised"><span data-i18n="diag">Copy detected keys (diagnostics)</span></button>
+                </div>
+                <textarea id="eus-diag-out" class="eus-diag" style="display:none" readonly></textarea>
+                <p id="eus-load-status" class="eus-note"></p>
+            </div>
+
+            <div class="eus-panel">
+                <h2 data-i18n="targetGroup">Target users</h2>
+                <div class="eus-actions">
+                    <button is="emby-button" type="button" id="eus-reload" class="raised"><span data-i18n="reloadUsers">Reload users</span></button>
+                    <button is="emby-button" type="button" id="eus-select-all" class="raised"><span data-i18n="selectAll">Select all</span></button>
+                    <button is="emby-button" type="button" id="eus-select-none" class="raised"><span data-i18n="selectNone">Select none</span></button>
+                </div>
+                <p id="eus-count" class="eus-note"></p>
+                <div id="eus-users" class="eus-users"><span data-i18n="loadingUsers">Loading users…</span></div>
+            </div>
+
+            <div id="eus-settings" class="eus-stack"></div>
+
+            <details class="eus-panel" id="eus-more">
+                <summary data-i18n="otherSettings">Other settings</summary>
+                <p class="eus-note" data-i18n="otherNote"></p>
+                <div class="eus-row" id="eus-filter-row">
+                    <input type="text" id="eus-filter" class="eus-text" data-i18n-placeholder="filter" />
+                </div>
+                <div id="eus-extra" class="eus-extra"></div>
+            </details>
+
+            <div class="eus-panel">
+                <h2 data-i18n="apply">Apply</h2>
+                <div class="eus-actions"><button is="emby-button" type="button" id="eus-apply" class="raised button-submit"><span data-i18n="applyToUsers">Apply to selected users</span></button></div>
+                <div id="eus-status" class="eus-status" role="status"></div>
+                <pre id="eus-results" class="eus-results"></pre>
+            </div>
+        </div>
+    </div>
+</div>
