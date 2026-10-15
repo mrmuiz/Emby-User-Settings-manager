@@ -1,5 +1,7 @@
 # Emby User Settings Manager —  beta
-
+<p align="center">
+  <img src="Configuration/logo.png" width="420" alt="Emby User Settings Manager">
+</p>
 Source for an Emby Server plugin dashboard page that applies selected display and playback preferences to all users or a selected subset.
 
 ![Hoofdpagina](docs/hoofdpagina.png)
