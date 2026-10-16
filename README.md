@@ -1,42 +1,86 @@
-# Emby User Settings Manager —  beta
+# Emby User Settings Manager — beta
+
 <p align="center">
   <img src="Configuration/logo.png" width="420" alt="Emby User Settings Manager">
 </p>
 
-![Hoofdpagina](docs/hoofdpagina.png)
-![Hoofdpagina](docs/users1.jpg)
-![Hoofdpagina](docs/users2.jpg)
+**Mass-edit user settings and permissions across multiple Emby users at once.**
 
-## How it works (beta)
+> Beta plugin for Emby Server administrators.
 
-The page mirrors Emby's own user settings pages (Display, Detail screens, Home & library, Sound, Advanced, Subtitles). Everything is checked by default; only checked settings are applied.
+![Main page](docs/hoofdpagina.png)
+![User selection](docs/users1.jpg)
+![User selection](docs/users2.jpg)
 
-1. On open, the plugin reads the stored settings of all users to find out which keys exist on your server (Emby only stores display preferences that were changed). Settings whose key cannot be found are greyed out and are never applied.
-2. Tick the target users (nothing is pre-selected) and press Apply. Every change is read back and verified per user.
-3. **Presets**: name the current selection and save it; presets are stored on the server in the plugin configuration (`PresetsJson`).
-4. Optional: "Copy settings from a user" fills the page with that user's values.
-5. "Other settings found (advanced)" lists remaining stored keys under their internal names (unchecked by default).
-6. "Copy detected keys (diagnostics)" shows the keys found on your server, which helps map greyed-out settings.
+## What is this?
 
-The page is for Emby administrators only: it checks the signed-in user's administrator flag and otherwise shows only a message and makes no changes (Emby's own API also refuses these calls for non-administrators).
+Emby lets you configure user preferences (display, home screen, subtitles, sound, etc.) per user. When you manage more than a handful of users, changing these settings one by one quickly becomes tedious.
 
-User permissions (Profile & account, Playback permissions, Feature access, Access & parental control) are written to the user policy (`Users/{id}/Policy`, field names from the official `UserPolicy` reference). They are unchecked by default and skipped by "Check all". Making users administrators needs an extra confirmation, and you cannot disable your own account or remove your own administrator rights.
+**Emby User Settings Manager** gives administrators a single page where you can:
 
-Library order is applied as `OrderedViews`; the home sections list is applied as `homesection0..6` (unused slots are set to `none`); the default screen per library as `landing-<libraryId>`. The profile PIN (`ProfilePin`) is optional, unchecked by default and never saved in presets or diagnostics. Credentials (password, PIN) are never copied. Settings Emby keeps only on the device (subtitle appearance etc.), profile picture and notifications cannot be set from a server plugin.
+- Select multiple users at once
+- Choose exactly which settings to apply
+- Optionally copy settings from an existing user
+- Save reusable presets
+- Apply everything in one go (with verification)
+
+It mirrors Emby’s own user settings pages (Display, Detail screens, Home & library, Sound, Advanced, Subtitles) and also supports selected user policy/permission settings.
+
+## Features
+
+- **Bulk apply** – Select any combination of users and settings
+- **Copy from user** – Quickly fill the form with another user’s current values
+- **Presets** – Save named configurations for later reuse (stored in plugin config)
+- **Verification** – Every change is read back and confirmed per user
+- **Smart detection** – Only shows settings that actually exist on your server (others are greyed out)
+- **Safe by design** – Admin-only access, cannot lock yourself out, credentials are never copied
+- **Bilingual** – English + Dutch UI (auto-detects language)
+
+## How it works
+
+1. Open the plugin page (Dashboard → Plugins → Emby User Settings Manager)
+2. *(Optional)* Use **Copy settings from a user** to load an existing user’s values
+3. Check the settings you want to apply (everything is checked by default)
+4. Select the target users (nothing is pre-selected)
+5. Click **Apply**
+
+On open, the plugin scans the stored settings of all users to discover which keys exist on your server. Settings whose key cannot be found are automatically greyed out and are never applied.
+
+**Presets**: name the current selection and save it. Presets are stored on the server in the plugin configuration (`PresetsJson`).
+
+**Other settings found (advanced)** lists remaining stored keys under their internal names (unchecked by default).  
+**Copy detected keys (diagnostics)** shows the keys found on your server — useful for mapping greyed-out settings.
+
+### User permissions
+
+User permissions (Profile & account, Playback permissions, Feature access, Access & parental control) are written to the user policy. They are unchecked by default and skipped by “Check all”.
+
+- Making users administrators requires an extra confirmation
+- You cannot disable your own account or remove your own administrator rights
+- Credentials (password / PIN) are never copied
+- The profile PIN is optional, unchecked by default, and never saved in presets or diagnostics
+
+### Technical notes
+
+- Library order is applied as `OrderedViews`
+- Home sections are applied as `homesection0..6` (unused slots set to `none`)
+- Default screen per library as `landing-<libraryId>`
+- Device-only settings (subtitle appearance, profile picture, notifications) cannot be set from a server plugin
 
 ## UI and compatibility
 
-- English and Dutch UI text; detects the dashboard document language first, then browser/app language, with English fallback.
-- Responsive CSS for narrow mobile screens and embedded WebViews.
-- The page remains a custom HTML/JavaScript UI because it needs user selection, custom apply actions, and verification. See `SDK-COMPATIBILITY.md` for why the official Simple Plugin UI template is not a drop-in replacement.
-- The plugin page is registered as a configuration page, without a separate main-menu entry.
-- Uses the signed-in Emby dashboard `ApiClient` session; no API key is embedded or stored.
+- English and Dutch UI text; detects the dashboard document language first, then browser/app language, with English fallback
+- Responsive CSS for narrow mobile screens and embedded WebViews
+- The page remains a custom HTML/JavaScript UI because it needs user selection, custom apply actions, and verification  
+  → See [`SDK-COMPATIBILITY.md`](SDK-COMPATIBILITY.md) for why the official Simple Plugin UI template is not a drop-in replacement
+- Registered as a configuration page (no separate main-menu entry)
+- Uses the signed-in Emby dashboard `ApiClient` session — no API key is embedded or stored
 
-Responsive layout and localization improve the page itself but cannot override an app's policy for which plugin configuration pages it allows. Android's “sign in to your local server directly” message and Windows Theater's layering issue still require app-specific investigation and testing.
+> Note: Responsive layout and localization improve the page itself but cannot override an app’s policy for which plugin configuration pages it allows. Android’s “sign in to your local server directly” message and Windows Theater’s layering issue still require app-specific investigation and testing.
 
 ## Safe test procedure
 
-1. Back up the currently installed plugin DLL and its configuration.
-2. Test the build on a test Emby Server first.
-3. Verify the page loads, users load, and a single test user's settings are correctly applied and verified.
-4. Only then consider production use. Do not use “all users” until the single-user test passes.
+1. Back up the currently installed plugin DLL and its configuration
+2. Test the build on a test Emby Server first
+3. Verify the page loads, users load, and a single test user’s settings are correctly applied and verified
+4. Only then consider production use. Do **not** use “all users” until the single-user test passes
