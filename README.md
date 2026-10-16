@@ -4,8 +4,8 @@
 </p>
 
 ![Hoofdpagina](docs/hoofdpagina.png)
-![Hoofdpagina](docs/users1.png)
-![Hoofdpagina](docs/users2.png)
+![Hoofdpagina](docs/users1.jpg)
+![Hoofdpagina](docs/users2.jpg)
 
 ## How it works (beta)
 
