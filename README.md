@@ -6,7 +6,7 @@ Source for an Emby Server plugin dashboard page that applies selected display an
 
 ![Hoofdpagina](docs/hoofdpagina.png)
 
-## How it works (0.1 beta)
+## How it works (beta)
 
 The page mirrors Emby's own user settings pages (Display, Detail screens, Home & library, Sound, Advanced, Subtitles). Everything is checked by default; only checked settings are applied.
 
