@@ -4,7 +4,7 @@
 </p>
 Source for an Emby Server plugin dashboard page that applies selected display and playback preferences to all users or a selected subset.
 
-![Hoofdpagina](docs/hoofdpagina.png)
+
 
 ## How it works (0.1 beta)
 
