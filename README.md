@@ -34,19 +34,6 @@ Library order is applied as `OrderedViews`; the home sections list is applied as
 
 Responsive layout and localization improve the page itself but cannot override an app's policy for which plugin configuration pages it allows. Android's “sign in to your local server directly” message and Windows Theater's layering issue still require app-specific investigation and testing.
 
-## Build
-
-The included GitHub Actions workflow (`.github/workflows/build.yml`) builds the DLL automatically when pushed to GitHub (download it from the run's Artifacts). This archive itself contains source only. Build on a machine with the .NET SDK and matching Emby SDK references installed:
-
-```powershell
-dotnet restore
-dotnet build -c Release
-```
-
-Plugin logo: `Configuration/logo.png` is embedded and shown in the Emby plugin list.
-
-Expected DLL: `bin/Release/netstandard2.0/EmbyUserSettingsManager.dll` (confirm the target framework and output path in the project/build environment). This environment did not have the .NET SDK available, so no build or runtime test is claimed.
-
 ## Safe test procedure
 
 1. Back up the currently installed plugin DLL and its configuration.
