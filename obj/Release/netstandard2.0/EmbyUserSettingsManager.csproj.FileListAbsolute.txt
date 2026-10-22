@@ -1,0 +1,10 @@
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\bin\Release\netstandard2.0\EmbyUserSettingsManager.deps.json
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\bin\Release\netstandard2.0\EmbyUserSettingsManager.dll
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\bin\Release\netstandard2.0\EmbyUserSettingsManager.pdb
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.csproj.AssemblyReference.cache
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.AssemblyInfo.cs
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.dll
+C:\Users\Admin\Desktop\Emby-User-Settings-manager-0.1.1-beta\obj\Release\netstandard2.0\EmbyUserSettingsManager.pdb

@@ -3,10 +3,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>EmbyUserSettingsManager</AssemblyName>
     <RootNamespace>EmbyUserSettingsManager</RootNamespace>
-    <Version>0.1.0-beta</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <InformationalVersion>0.1 beta</InformationalVersion>
+    <Version>0.1.2-beta</Version>
+    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <FileVersion>0.1.2.0</FileVersion>
+    <InformationalVersion>0.1.2 beta</InformationalVersion>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>

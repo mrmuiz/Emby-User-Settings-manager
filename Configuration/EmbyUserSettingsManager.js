@@ -22,34 +22,39 @@ define([], function () {
             // ---------------------------------------------------------------
             var BOOL = [['true', 'on'], ['false', 'off']];
             var HOME_OPTS = [['none', 'secNone'], ['smalllibrarytiles', 'secLibrary'], ['librarybuttons', 'secLibraryButtons'], ['resume', 'secResume'], ['resumeaudio', 'secResumeAudio'], ['latestmedia', 'secLatest'], ['nextup', 'secNextUp'], ['livetv', 'secLiveTv'], ['activerecordings', 'secRecordings'], ['playlists', 'secPlaylists']];
-            var SKIP_OPTS = [['5000', '5 s'], ['10000', '10 s'], ['15000', '15 s'], ['20000', '20 s'], ['30000', '30 s']];
-            var HOME_DEF = ['smalllibrarytiles', 'resume', 'latestmedia', 'none', 'none', 'none', 'none'];
+            // "Are you still watching?" is an on/off switch in Emby; it is stored as milliseconds in 'stillwatchingms'
+            // (0 = off). Emby writes 14400000 (4 hours) when the switch is turned on.
+            var STILL_ON_MS = '14400000';
+            var STILL_OPTS = [[STILL_ON_MS, 'on'], ['0', 'off']];
+            var SKIP_OPTS = [['5000', '5 s'], ['10000', '10 s'], ['15000', '15 s'], ['20000', '20 s'], ['25000', '25 s'], ['30000', '30 s']];
+            var HOME_DEF = ['smalllibrarytiles', 'resume', 'resumeaudio', 'livetv', 'none', 'latestmedia', 'none']; // Emby's own defaults
+            var GENRE_OPTS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].map(function (n) { return [n, n]; });
             var DEFS = [
                 // Display
-                { id: 'theme', group: 'display', label: 'theme', target: 'prefs', key: 'appTheme', options: [['dark', 'Dark'], ['light', 'Light'], ['auto', 'Auto']], def: 'dark' },
-                { id: 'accent', group: 'display', label: 'accentColor', target: 'prefs', key: 'accentColor', options: [['blue', 'Blue'], ['purple', 'Purple'], ['green', 'Green'], ['red', 'Red'], ['orange', 'Orange'], ['pink', 'Pink'], ['emby', 'Emby']], def: 'blue' },
-                { id: 'audioBackdrop', group: 'display', label: 'audioBackdrop', target: 'prefs', key: 'nowPlayingVideoBackgroundStyle', options: [['backdrop', 'bgBackdrop'], ['blur', 'bgBlur']], def: 'blur' },
-                { id: 'tvView', group: 'display', label: 'tvView', target: 'prefs', key: 'seriesDisplay', options: [['episodessingleseason', 'episodessingleseason']], def: 'episodessingleseason' },
+                { id: 'accent', group: 'display', label: 'accentColor', target: 'prefs', key: 'accentColor', options: [['emby', 'Emby'], ['blue', 'Blue'], ['green', 'Green'], ['pink', 'Pink'], ['purple', 'Purple'], ['red', 'Red']], def: 'emby' },
+                { id: 'audioBackdrop', group: 'display', label: 'audioBackdrop', target: 'prefs', key: 'nowPlayingAudioBackgroundStyle', options: [['backdrop', 'bgBackdrop'], ['blur', 'bgBlur']], def: 'blur' },
+                { id: 'tvView', group: 'display', label: 'tvView', target: 'prefs', key: 'seriesDisplay', options: [['episodes', 'seriesAllEps'], ['episodessingleseason', 'episodessingleseason'], ['seasons', 'seriesSeasons']], def: 'episodes' },
                 { id: 'singleFolder', group: 'display', label: 'singleFolder', target: 'prefs', key: 'enableAutoFolderJumpThrough', options: BOOL, def: 'true' },
                 { id: 'spoiler', group: 'display', label: 'spoiler', target: 'prefs', key: 'hideEpisodeSpoilerInfo', options: BOOL, def: 'false' },
+                { id: 'folderOutlines', group: 'display', label: 'folderOutlines', target: 'prefs', key: 'enableFolderViewTypeIndicators', options: BOOL, def: 'true' },
                 { id: 'hideMore', group: 'display', label: 'hidePlayedMore', target: 'config', key: 'HidePlayedInMoreLikeThis', vtype: 'boolean', def: false },
                 { id: 'hideSugg', group: 'display', label: 'hidePlayedSuggestions', target: 'config', key: 'HidePlayedInSuggestions', vtype: 'boolean', def: false },
                 { id: 'hideLatest', group: 'display', label: 'hidePlayedLatest', target: 'config', key: 'HidePlayedInLatest', vtype: 'boolean', def: false },
                 // Detail screens
                 { id: 'logo', group: 'detail', label: 'logoAsTitles', target: 'prefs', key: 'enableLogoAsTitle', options: BOOL, def: 'true' },
                 { id: 'posterDetail', group: 'detail', label: 'posterDetail', target: 'prefs', key: 'showDetailPoster', alsoKeys: ['showDetailPostertv'], options: BOOL, def: 'true' },
-                { id: 'genreLists', group: 'detail', label: 'genreLimitLists', target: 'prefs', key: 'genreLimitForListsOnDetails', def: '3' },
-                { id: 'genreLimit', group: 'detail', label: 'genreLimit', target: 'prefs', key: 'genreLimitOnDetails', def: '3' },
+                { id: 'genreLists', group: 'detail', label: 'genreLimitLists', target: 'prefs', key: 'genreLimitForListsOnDetails', options: GENRE_OPTS, def: '3' },
+                { id: 'genreLimit', group: 'detail', label: 'genreLimit', target: 'prefs', key: 'genreLimitOnDetails', options: GENRE_OPTS, def: '1' },
                 { id: 'fullMedia', group: 'detail', label: 'fullMedia', target: 'prefs', key: 'showFullMediaInfoOnDetailScreen', options: BOOL, def: 'true' },
                 // Home & library
                 { id: 'homeList', group: 'home', label: 'homeSections', target: 'prefs', key: 'homesection*', vtype: 'json', kind: 'homelist', def: HOME_DEF.filter(function (x) { return x !== 'none'; }) },
-                { id: 'focusPrev', group: 'home', label: 'focusPreviews', target: 'prefs', key: 'enableHomescreenFocusPreviews', options: BOOL, def: 'true' },
+                { id: 'focusPrev', group: 'home', label: 'focusPreviews', target: 'prefs', key: 'enableHomescreenFocusPreviews', options: BOOL, def: 'false' },
                 { id: 'views', group: 'home', label: 'libraryOrder', target: 'config', key: 'OrderedViews', vtype: 'json', kind: 'views', def: [] },
                 { id: 'myMediaExcl', group: 'home', label: 'myMediaExcludes', target: 'config', key: 'MyMediaExcludes', vtype: 'json', kind: 'libexcl', defaultUnchecked: true, def: [] },
                 { id: 'latestExcl', group: 'home', label: 'latestExcludes', target: 'config', key: 'LatestItemsExcludes', vtype: 'json', kind: 'libexcl', defaultUnchecked: true, def: [] },
                 { id: 'missingEps', group: 'home', label: 'displayMissingEpisodes', target: 'config', key: 'DisplayMissingEpisodes', vtype: 'boolean', def: false },
                 // Sound
-                { id: 'audioLang', group: 'sound', label: 'audioLanguage', target: 'config', key: 'AudioLanguagePreference', placeholder: 'dut, eng, ger…', def: '' },
+                { id: 'audioLang', group: 'sound', label: 'audioLanguage', target: 'config', key: 'AudioLanguagePreference', placeholder: 'nl,en,de…', def: '' },
                 { id: 'defAudio', group: 'sound', label: 'playDefaultAudio', target: 'config', key: 'PlayDefaultAudioTrack', vtype: 'boolean', def: true },
                 { id: 'remAudio', group: 'sound', label: 'rememberAudio', target: 'config', key: 'RememberAudioSelections', vtype: 'boolean', def: true },
                 // Advanced
@@ -57,13 +62,13 @@ define([], function () {
                 { id: 'nextPreview', group: 'playback', label: 'nextPreview', target: 'prefs', key: 'enableNextVideoInfoOverlay', options: BOOL, def: 'true' },
                 { id: 'skipFwd', group: 'playback', label: 'skipForward', target: 'prefs', key: 'skipForwardLength', options: SKIP_OPTS, def: '10000' },
                 { id: 'skipBack', group: 'playback', label: 'skipBack', target: 'prefs', key: 'skipBackLength', options: SKIP_OPTS, def: '10000' },
-                { id: 'rewind', group: 'playback', label: 'resumeRewind', target: 'config', key: 'ResumeRewindSeconds', vtype: 'number', options: [['0', 'rewindNone'], ['5', '5 s'], ['10', '10 s'], ['15', '15 s'], ['30', '30 s']], def: 0 },
+                { id: 'rewind', group: 'playback', label: 'resumeRewind', target: 'config', key: 'ResumeRewindSeconds', vtype: 'number', options: [['0', 'rewindNone'], ['5', '5 s'], ['10', '10 s'], ['15', '15 s'], ['20', '20 s']], def: 0 },
                 { id: 'intro', group: 'playback', label: 'skipIntros', target: 'config', key: 'IntroSkipMode', options: [['AutoSkip', 'autoSkip'], ['ShowButton', 'showButton'], ['None', 'off']], def: 'AutoSkip' },
-                { id: 'stillWatching', group: 'playback', label: 'stillWatching', target: 'prefs', key: 'stillwatchingms', def: '0' },
+                { id: 'stillWatching', group: 'playback', label: 'stillWatching', target: 'prefs', key: 'stillwatchingms', options: STILL_OPTS, def: STILL_ON_MS },
                 { id: 'ratingInfo', group: 'playback', label: 'ratingInfo', target: 'prefs', key: 'enableRatingInfoOnPlaybackStart', options: BOOL, def: 'true' },
-                { id: 'upAction', group: 'playback', label: 'upAction', target: 'prefs', key: 'videoScreenUpAction', def: 'chapters' },
+                { id: 'upAction', group: 'playback', label: 'upAction', target: 'prefs', key: 'videoScreenUpAction', options: [['', 'upShowControls'], ['chapters', 'upChapters']], def: '' },
                 // Subtitles
-                { id: 'subLang', group: 'subs', label: 'subtitleLanguage', target: 'config', key: 'SubtitleLanguagePreference', placeholder: 'dut, eng, ger…', def: '' },
+                { id: 'subLang', group: 'subs', label: 'subtitleLanguage', target: 'config', key: 'SubtitleLanguagePreference', placeholder: 'nl,en,de…', def: '' },
                 { id: 'subMode', group: 'subs', label: 'subtitleMode', target: 'config', key: 'SubtitleMode', options: [['Default', 'subDefault'], ['Smart', 'subSmart'], ['OnlyForced', 'subForced'], ['Always', 'subAlways'], ['None', 'off']], def: 'Default' },
                 { id: 'subSkipBack', group: 'subs', label: 'subSkipBack', target: 'config', key: 'ShowSubtitlesOnSkipBack', vtype: 'boolean', def: true },
                 { id: 'subLowVol', group: 'subs', label: 'subLowVolume', target: 'config', key: 'ShowSubtitlesOnLowVolume', vtype: 'boolean', def: true },
@@ -119,7 +124,7 @@ define([], function () {
             }
             var EXCLUDE = /password|pincode|profilepin|^pin$|localpassword|^id$|^serverid$/i;
             // Per-library view state and device hints: not useful to copy between users.
-            var NOISE = /^landing-|groupby|groupitems|^atv_pref|lastplaylistid|^subtitleeditor|^items-|^\d+-\d+-|^devices-|^apikeys-|^playlisteditor|-(groupBy|sortBy|sortOrder|viewType|imageType)/i;
+            var NOISE = /^landing-|groupby|groupitems|^atv_pref|lastplaylistid|^subtitleeditor|^items-|^\d+-\d+-|^devices-|^apikeys-|^playlisteditor|^apptheme$|^settingstheme$|^usesystemaccentcolor$|-(groupBy|sortBy|sortOrder|viewType|imageType)/i;
 
             var translations = {
                 en: {
@@ -138,7 +143,7 @@ define([], function () {
                     homeSection: 'Home section {0}', focusPreviews: 'Home screen focus previews', libraryOrder: 'Library order', defMovies: 'Movies: default screen', defSeries: 'Series: default screen', displayMissingEpisodes: 'Show missing episodes',
                     secNone: 'None', secLibrary: 'My media', secLibraryButtons: 'My media (buttons)', secResume: 'Continue watching', secResumeAudio: 'Continue listening', secLatest: 'Latest media', secNextUp: 'Next up', secLiveTv: 'Live TV', secRecordings: 'Active recordings', homeSections: 'Home sections', myMediaExcludes: 'My media: hide libraries', latestExcludes: 'Latest media: exclude libraries', addSection: 'Add', removeSection: 'Remove', profile: 'Profile', profilePin: 'Profile PIN code', account: 'Profile & account', perms: 'Playback (permissions)', features: 'Feature access', access: 'Access & parental control', isAdmin: 'This user can administer the server', remoteAccess: 'Allow remote connections to this Emby Server', userPrefs: 'Allow the user to change their own password and profile picture', isDisabled: 'Disable this account', isHidden: 'Hide this user on login screens on the local network', isHiddenRemotely: 'Hide this user on login screens for remote connections', isHiddenUnused: 'Hide this user on devices where they have never signed in', mediaPlayback: 'Allow media playback', audioTranscode: 'Allow audio transcoding when needed', videoTranscode: 'Allow video transcoding when needed', remux: 'Allow container format changes when needed', remoteBitrate: 'Bitrate limit per stream outside the network (bit/s, 0 = none)', autoQuality: 'Streaming quality when the player is on auto quality (0 = none)', simStreams: 'Maximum simultaneous streams (0 = unlimited)', liveTv: 'Live TV', liveTvManage: 'Manage Live TV recordings', deleteContent: 'Allow deleting media (all libraries)', deleteFrom: 'Allow deleting media from (libraries)', remoteControl: 'Allow remote control of other users', sharedDevice: 'Allow remote control of shared devices', download: 'Allow media downloads', downloadTranscode: 'Allow downloads that require transcoding', subDownload: 'Allow subtitle downloads', subManage: 'Allow deleting existing subtitles', cameraUpload: 'Allow camera upload', mediaConversion: 'Allow media conversion', sharePersonal: 'Allow sharing personal content such as playlists with other users', publicSharing: 'Allow sharing on social media', allFolders: 'Access to all libraries', enabledFolders: 'Allowed libraries', allDevices: 'Access from all devices', maxRating: 'Maximum parental rating (number, empty = none)', blockUnrated: 'Block unrated items', blockedTags: 'Blocked tags (comma-separated)', includeTags: 'Allowed tags (comma-separated)', tagInclusive: 'Use tags as an allow list', adminOnly: 'This page is only available to Emby administrators. Sign in with an administrator account.', adminWarn: 'You are about to make the selected users administrators and/or disable their accounts. Continue?', lockout: 'You cannot disable your own account or remove your own administrator rights.', badPin: 'A PIN code must be exactly 4 digits (or empty).', secPlaylists: 'Playlists', defaultScreen: 'Default screen', bgBackdrop: 'Backdrop', bgBlur: 'Primary image blur',
                     audioLanguage: 'Preferred audio language', playDefaultAudio: 'Play default audio track regardless of language', rememberAudio: 'Remember audio track selections',
-                    autoplayNext: 'Automatically play next episode', nextPreview: 'Show next video preview', skipForward: 'Skip forward length', skipBack: 'Skip back length', resumeRewind: 'Automatically rewind on resume', rewindNone: 'None', skipIntros: 'Skip intros', stillWatching: '“Are you still watching?” reminder', ratingInfo: 'Show rating info when starting video playback', upAction: 'Video player up action',
+                    autoplayNext: 'Automatically play next episode', nextPreview: 'Show next video preview', skipForward: 'Skip forward length', skipBack: 'Skip back length', resumeRewind: 'Automatically rewind on resume', rewindNone: 'None', skipIntros: 'Skip intros', stillWatching: '“Are you still watching?” reminder', ratingInfo: 'Show rating info when starting video playback', upAction: 'Actie “omhoog” in de videospeler', upShowControls: 'Bedieningselementen op het scherm tonen', upChapters: 'Hoofdstukkengids', seriesAllEps: 'Toon alle afleveringen van alle seizoenen samen', seriesSeasons: 'Seizoensmappen', folderOutlines: 'Mapomtrekken tonen in mapweergave om mappen van media te onderscheiden', upShowControls: 'Show on-screen controls', upChapters: 'Chapters guide', seriesAllEps: 'All episodes of all seasons together', seriesSeasons: 'Season folders', folderOutlines: 'Show folder outlines in folder view to help distinguish folders from media',
                     subtitleLanguage: 'Preferred subtitle language', subtitleMode: 'Subtitle mode', subSkipBack: 'Show subtitles on skip back', subLowVolume: 'Show subtitles on low volume', rememberSubs: 'Remember subtitle track selection',
                     subDefault: 'Default', subSmart: 'Smart', subForced: 'Only forced', subAlways: 'Always', on: 'On', off: 'Off', autoSkip: 'Automatically skip', showButton: 'Show button',
                     otherSettings: 'Other settings', otherNote: 'More settings stored on your server that are not listed above, shown under their internal names. Unchecked by default.', filter: 'Filter by name…', noOther: 'No other settings found.',
@@ -316,6 +321,11 @@ define([], function () {
                     stillWatching: "Erinnerung „Schaust du noch?“",
                     ratingInfo: "Bewertungsinfo beim Start der Videowiedergabe anzeigen",
                     upAction: "Aktion „Nach oben“ im Videoplayer",
+                    upShowControls: "Bedienelemente auf dem Bildschirm anzeigen",
+                    upChapters: "Kapitelübersicht",
+                    seriesAllEps: "Alle Episoden aller Staffeln zusammen",
+                    seriesSeasons: "Staffelordner",
+                    folderOutlines: "Ordnerumrisse in der Ordneransicht anzeigen, um Ordner von Medien zu unterscheiden",
                     subtitleLanguage: "Bevorzugte Untertitelsprache",
                     subtitleMode: "Untertitelmodus",
                     subSkipBack: "Untertitel beim Zurückspringen anzeigen",
@@ -496,6 +506,11 @@ define([], function () {
                     stillWatching: "Rappel “Vous regardez toujours ?”",
                     ratingInfo: "Afficher la classification au démarrage de la lecture vidéo",
                     upAction: "Action « haut » du lecteur vidéo",
+                    upShowControls: "Afficher les commandes à l’écran",
+                    upChapters: "Guide des chapitres",
+                    seriesAllEps: "Tous les épisodes de toutes les saisons réunis",
+                    seriesSeasons: "Dossiers de saison",
+                    folderOutlines: "Afficher les contours des dossiers dans la vue dossier pour les distinguer des médias",
                     subtitleLanguage: "Langue de sous-titres préférée",
                     subtitleMode: "Mode des sous-titres",
                     subSkipBack: "Afficher les sous-titres lors d’un retour arrière",
@@ -676,6 +691,11 @@ define([], function () {
                     stillWatching: "Recordatorio “¿Sigues viendo?”",
                     ratingInfo: "Mostrar la clasificación al iniciar la reproducción de vídeo",
                     upAction: "Acción de flecha arriba en el reproductor de vídeo",
+                    upShowControls: "Mostrar controles en pantalla",
+                    upChapters: "Guía de capítulos",
+                    seriesAllEps: "Todos los episodios de todas las temporadas juntos",
+                    seriesSeasons: "Carpetas de temporada",
+                    folderOutlines: "Mostrar contornos de carpetas en la vista de carpetas para distinguirlas de los medios",
                     subtitleLanguage: "Idioma de subtítulos preferido",
                     subtitleMode: "Modo de subtítulos",
                     subSkipBack: "Mostrar subtítulos al retroceder",
@@ -873,6 +893,8 @@ define([], function () {
                 if (e.vtype === 'number') { if (raw === '' && e.nullable) return null; var n = Number(raw); if (raw === '' || isNaN(n)) throw new Error(t('badValue', [e.key])); return n; }
                 if (e.vtype === 'json') { try { return JSON.parse(raw); } catch (x) { throw new Error(t('badValue', [e.key])); } }
                 if (e.nullable && raw === '') return null;
+                // Emby stores language preferences as two-letter codes joined by ',' with no spaces (e.g. "nl,en").
+                if (e.key === 'AudioLanguagePreference' || e.key === 'SubtitleLanguagePreference') return raw.split(',').map(function (x) { return x.trim(); }).filter(function (x) { return x; }).join(',');
                 return raw;
             }
             function entryName(e) { if (e.title) return e.title; return e.label ? t(e.label, e.n ? [e.n] : null) : e.key; }
