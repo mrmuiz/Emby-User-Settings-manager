@@ -1,4 +1,4 @@
-# Emby User Settings Manager —  beta
+# Emby User Settings Manager — beta
 <p align="center">
   <img src="Configuration/logo.png" width="420" alt="Emby User Settings Manager">
 </p>
@@ -28,14 +28,14 @@ Library order is applied as `OrderedViews`; the home sections list is applied as
 - English and Dutch UI text; detects the dashboard document language first, then browser/app language, with English fallback.
 - Responsive CSS for narrow mobile screens and embedded WebViews.
 - The page remains a custom HTML/JavaScript UI because it needs user selection, custom apply actions, and verification. See `SDK-COMPATIBILITY.md` for why the official Simple Plugin UI template is not a drop-in replacement.
-- The plugin page is registered as a configuration page, without a separate main-menu entry.
+- The plugin page is registered as the main configuration page and also appears in the dashboard main menu (Advanced section) as "Emby User Settings".
 - Uses the signed-in Emby dashboard `ApiClient` session; no API key is embedded or stored.
 
 Responsive layout and localization improve the page itself but cannot override an app's policy for which plugin configuration pages it allows. Android's “sign in to your local server directly” message and Windows Theater's layering issue still require app-specific investigation and testing.
 
 ## Build
 
-The included GitHub Actions workflow (`.github/workflows/build.yml`) builds the DLL automatically when pushed to GitHub (download it from the run's Artifacts). This archive itself contains source only. Build on a machine with the .NET SDK and matching Emby SDK references installed:
+The included GitHub Actions workflow (`.github/workflows/build.yml`) builds the DLL automatically when pushed to GitHub (download it from the run's Artifacts). Build on a machine with the .NET SDK and matching Emby SDK references installed:
 
 ```powershell
 dotnet restore
@@ -44,7 +44,7 @@ dotnet build -c Release
 
 Plugin logo: `Configuration/logo.png` is embedded and shown in the Emby plugin list.
 
-Expected DLL: `bin/Release/netstandard2.0/EmbyUserSettingsManager.dll` (confirm the target framework and output path in the project/build environment). This environment did not have the .NET SDK available, so no build or runtime test is claimed.
+Expected DLL: `bin/Release/netstandard2.0/EmbyUserSettingsManager.dll` (confirm the target framework and output path in the project/build environment).
 
 ## Safe test procedure
 
