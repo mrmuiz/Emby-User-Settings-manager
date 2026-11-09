@@ -2,6 +2,7 @@
 <p align="center">
   <img src="Configuration/logo.png" width="420" alt="Emby User Settings Manager">
 </p>
+<p align="center"><a href="https://ko-fi.com/mrmuiz"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi"></a></p>
 Source for an Emby Server plugin dashboard page that applies selected display and playback preferences to all users or a selected subset.
 
 ![Hoofdpagina](docs/hoofdpagina.png)
